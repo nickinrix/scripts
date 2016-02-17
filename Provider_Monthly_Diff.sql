@@ -1,4 +1,4 @@
---use WAFSQLBI01.BI
+--use WAFSQLBI01.BI and change start date as needed
 --sp_helptext [rptDustProviderMonthly_MDC]
 
 with x as
