@@ -1,11 +1,14 @@
 --Run on PIT database
+--declare @providerId smallint  
+--set @providerId = 385
+
 drop table #rawdata
 drop table #DupesForDust
 
 select * into #rawdata
 from pit (nolock)
 where ArrivalDtUtc  between '2016-1-4 18:00' and '2016-1-4 19:00'
-and Longitude > -32 -- >= '2015-11-1'
+--and Longitude > -32 
 --and VendorID = 13200         
 --select top 10 * from #RawData where datediff(minute,[capturetimeutc], ArrivalDtUtc) < 0  select count(*) from #rawdata where speed > 255
 
@@ -14,10 +17,8 @@ into #DupesForDust
 from #rawdata 
 where 1=1-- providerid = @providerid    
 and Speed <> 0  
---and Type_ = 'GPS'  
 group by Latitude, Longitude, Speed, Heading, [capturetimeutc]  
 having count(*)>1  
-
 
 select substring(convert(varchar,ArrivalDtUtc ,120),1,13) as arrival_hour--+'0' as [10_min_range_utc]
        ,count(*) as rows_total
@@ -75,7 +76,6 @@ select sum(Dupe_Count-1) as SumDupes
 from #DupesForDust  
 )
 select * from A,B,C,D,E,F
-  
 
 select Speed,count(1)Spd_Count  
 from #rawdata 
