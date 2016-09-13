@@ -4,8 +4,8 @@
 declare @currentmonthstartdate datetime
 declare @previousmonthstartdate datetime
 
-set @currentmonthstartdate = '2016-3-1'
-set @previousmonthstartdate = '2016-2-1'
+set @currentmonthstartdate = '2016-8-1'
+set @previousmonthstartdate = '2016-7-1'
 
 --select volume decreases greater than 500M for current month
 ;
