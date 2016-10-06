@@ -8,12 +8,18 @@ declare @starttime datetime
 declare @providerId smallint  
 declare @minutes smallint  
 
-
-set @providerId = 385
+set @providerId = 414
 set @minutes = 120  
-set @endtime = (select max(insertdtutc) from [FlowData_1] where providerid = @providerid)  
-set @starttime = dateadd(MI,-@minutes,(select max(insertdtutc) from [FlowData_1] where providerid = @providerid))  
-  
+set @endtime = '2016-09-27 16:40' --(select max(insertdtutc) from [FlowData_1] where providerid = @providerid)  
+set @starttime = '2016-09-27 15:40' --dateadd(MI,-@minutes,(select max(insertdtutc) from [FlowData_1] where providerid = @providerid))  
+ 
+drop table #FlowForAnalysis
+drop table #dupesfordust  
+drop table #gettargetprovider  
+drop table #averagedSpeedsCompares  
+drop table #averagedSpeeds  
+drop table #getotherproviders  
+
 select @providerid ProviderId, @starttime BiasStartTime, @endtime BiasEndTime  
 
 --DNFBLAINFEU02.FlowStageEU
@@ -145,13 +151,13 @@ case when AvgSpeed*100/ReferenceSpeed between 0 and 18 then 'DarkRed'
      when AvgSpeed*100/ReferenceSpeed between 19 and 34 then 'Red'  
      when AvgSpeed*100/ReferenceSpeed between 35 and 65 then 'Yellow'  
      else 'Green' end as Color into #averagedSpeedsCompares  
-from #averagedSpeeds inner join ReferenceDefs..Link edge--RoadSegmentEU..EdgeRoadSegment edge  
-on #averagedSpeeds.EdgeID = edge.LinkID  
-join ReferenceDefs.dbo.LinkProperty lp on edge.LinkPropertyID = lp.LinkPropertyID 
---inner join RoadSegmentEU..RoadSegmentTMC tmc  
---on edge.RoadSegmentID=tmc.RoadSegmentID  
+from #averagedSpeeds inner join RoadSegment..EdgeRoadSegment edge -- ReferenceDefs..Link edge
+on #averagedSpeeds.EdgeID = edge.EdgeID  
+--join ReferenceDefs.dbo.LinkProperty lp on edge.LinkPropertyID = lp.LinkPropertyID 
+inner join RoadSegment..RoadSegmentTMC tmc  
+on edge.RoadSegmentID=tmc.RoadSegmentID  
 inner join ReferenceDefs..vwCurrentTMC frc  
-on frc.MvVersionID = lp.MvVersionID--tmc.TMC9ID=frc.TMC9ID  
+on tmc.TMC9ID=frc.TMC9ID -- frc.MvVersionID = lp.MvVersionID
 where ProviderID != @providerid  
 
 update #averagedSpeedsCompares  
@@ -188,10 +194,3 @@ from #averagedSpeedsCompares s, ReferenceDefs..Provider p
 where s.ProviderID = p.ProviderID  
 group by ProviderDesc, Color, BiasOfOneProvider  
 order by ProviderDesc, Color, BiasOfOneProvider  
-  
-drop table #FlowForAnalysis
-drop table #dupesfordust  
-drop table #gettargetprovider  
-drop table #averagedSpeedsCompares  
-drop table #averagedSpeeds  
-drop table #getotherproviders  
