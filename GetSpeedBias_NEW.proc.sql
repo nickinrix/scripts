@@ -1,17 +1,18 @@
 --ALTER proc [dbo].[GetSpeedBias_EU] @providerID smallint, @starttime datetime, @endtime datetime --@minutes smallint,   
 --as    
  /* Speed bias by provider.  */    
+ --Use any standard FlowStage database and change date range and provider ID as needed
 
 --set start and end times for analysis    
 declare @endtime datetime    
 declare @starttime datetime    
 declare @providerId smallint  
-declare @minutes smallint  
+--declare @minutes smallint  
 
-set @providerId = 414
-set @minutes = 120  
-set @endtime = '2016-09-27 16:40' --(select max(insertdtutc) from [FlowData_1] where providerid = @providerid)  
-set @starttime = '2016-09-27 15:40' --dateadd(MI,-@minutes,(select max(insertdtutc) from [FlowData_1] where providerid = @providerid))  
+set @providerId = 409
+--set @minutes = 120  
+set @starttime = '2016-10-14 18:30' --dateadd(MI,-@minutes,(select max(insertdtutc) from [FlowData_1] where providerid = @providerid))  
+set @endtime = '2016-10-14 19:30' --(select max(insertdtutc) from [FlowData_1] where providerid = @providerid)  
  
 drop table #FlowForAnalysis
 drop table #dupesfordust  
@@ -22,7 +23,6 @@ drop table #getotherproviders
 
 select @providerid ProviderId, @starttime BiasStartTime, @endtime BiasEndTime  
 
---DNFBLAINFEU02.FlowStageEU
 --Select data for given timeframe into temp table
 --;with x as (
 select *
@@ -60,8 +60,13 @@ having count(*)>1
 
 ;with A as
 (
-select min(CaptureDtUTC) MinCaptureDt, max(CaptureDtUTC) MaxCaptureDt, avg(datediff(mi,CaptureDtUTC, ArrivalDtUtc)) AvgLatency, count(*) as TotalCount, count(distinct(sensorid)) as DistinctDeviceCount,
- min(speed) as MinSpeed, max(speed) as MaxSpeed, avg(cast(heading as bigint)) as AvgHeading  
+select min([CaptureDtUtc]) MinCaptureDate
+,max([CaptureDtUtc]) MaxCaptureDate
+,cast(count(*) as bigint) as TotalCount
+,cast(count(distinct(sensorid)) as bigint) as DistinctDeviceCount
+,min(Speed) as MinSpeed, max(cast(Speed as bigint)) as MaxSpeed, avg(cast(Speed as bigint)) as AvgSpeed
+,min(Heading) as MinHeading, max(cast(Heading as bigint)) as MaxHeading, avg(cast(Heading as bigint)) as AvgHeading  
+,avg(cast(datediff(mi,[CaptureDtUtc], ArrivalDtUtc) as bigint)) AvgLatency
 from #FlowForAnalysis
 where providerid = @providerid   
 ),
@@ -81,14 +86,14 @@ and datediff(minute,CaptureDtUTC, insertdtutc) < 0
 ),
 D as
 (
-select avg(speed) as AvgSpeed, count(speed) NonZeroSpds   
+select count(speed) as NonZeroSpds   
 from #FlowForAnalysis
 where providerid = @providerid  
 and speed <> 0   
 ),
 E as
 (
-select count(speed) ZeroSpds  
+select count(speed) as ZeroSpds  
 from #FlowForAnalysis 
 where providerid = @providerid  
 and speed = 0  
