@@ -5,6 +5,7 @@ drop table #sum_dup
 select *
 into #pdata
 from PIT
+
 where ArrivalDtUtc between '2017-01-17 19:00' and '2017-01-17 20:00' --select time range of interest
 
 --query duplicates on following attributes filtering out counts > 1
@@ -13,6 +14,7 @@ into #sum_dup
 from #pdata
 --where speed <> 0 --filter non-moving vehicles/devices (not required, however non-moving vehicles can create duplicates)
 group by unitid, CaptureTimeUtc --Latitude,Longitude,Speed,Heading,
+
 having count(*) > 1
 
 --query sum of duplicate total, total count, and duplicate % of total
@@ -25,6 +27,7 @@ B as
 (
 select count(*) total_count from #pdata
 )
+
 select *, round((((cast(sum_dup as float) / cast(total_count as float))) * 100),2) as pct_dup from A, B
 
 

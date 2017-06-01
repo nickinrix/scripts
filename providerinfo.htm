@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Data Provider Information</title>
+</head>
+<style>
+body {
+    background-color: beige;
+}
+p {
+    background-color: rgb(255,255,255);
+	color: blue;
+	position: relative;
+    #left: 5px;
+    #top: 5px;
+	font-family: "Times New Roman";
+    font-size: 20px;
+}
+#header {
+    background-color:#00ff00;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+#nav {
+    line-height:30px;
+    background-color:cyan;
+    #height:400px;
+    width:250px;
+    float:left;
+    padding:5px;
+}
+#section {
+    width:500px;
+    float:left;
+    padding:10px;
+}
+#footer {
+    background-color:gray;
+    clear:both;
+    text-align:center;
+    padding:5px;	 	 
+}
+a:link {
+    color: green;
+    background-color: transparent;
+    text-decoration: none;
+}
+a:visited {
+    color: brown;
+    background-color: transparent;
+    text-decoration: none;
+}
+a:hover {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
+}
+a:active {
+    color: yellow;
+    background-color: transparent;
+    text-decoration: underline;
+}
+</style>
+<body>
+
+<div id="header">
+<h1>Data Provider Page</h1>
+</div>
+
+<div id="nav">
+<!--<input type="button" value="Provider Type (AWS)" onclick="window.open('file:///C:/Users/nick/Downloads/rdd.providertype.txt')" />
+<br>-->
+
+<input type="button" value="Sample json (XFCD interface)" onclick="window.open('https://inrix.sharepoint.com/Engineering/Shared%20Documents/Platform/Sample.txt')" />
+
+<input type="button" value="Calculate duplicate data (SQL)" onclick="window.open('https://github.com/INRIX-Nick-Fitzpatrick/general_scripts/blob/master/calc_provider_duplicates.sql')" />
+
+<input type="button" value="Calculate monthly volume change (SQL)" onclick="window.open('https://github.com/INRIX-Nick-Fitzpatrick/general_scripts/blob/master/Provider_Monthly_Diff.sql')" />
+
+<input type="button" value="Calculate data volumes for CS vendors (SQL)" onclick="window.open('https://github.com/INRIX-Nick-Fitzpatrick/general_scripts/blob/master/Vendors_CSPIT.sql')" />
+
+<br>
+
+</div>
+
+<div id="section">
+
+<p><a href="https://inrix.sharepoint.com/Engineering/Shared%20Documents/Platform/Provider%20Information%20Master%20Sheet%20GPS.xlsx?d=w8068bd992b954d9090f16e9c2b41acd2" target="_blank">Provider Information (Download from SharePoint)</a></p>
+
+<p><a href="https://inrix.sharepoint.com/Engineering/Shared%20Documents/Platform/ProviderCheckList.xlsx?d=w5da24d67bb024fe5b202b47c2d23d9ba" target="_blank">Provider Checklist (Download from SharePoint)</a></p>
+
+<p><a href="https://inrix.sharepoint.com/Engineering/Shared%20Documents/Platform/Data%20Provider%20Onboarding.pdf" target="_blank">Data Provider Onboarding (Download from SharePoint)</a></p>
+
+<p><a href="https://inrix.sharepoint.com/Engineering/Shared%20Documents/Platform/INRIX%20GPS%20Data%20Sample%20Spec.pdf" target="_blank">Data Sample Specification (Download from SharePoint)</a></p>
+
+<p><a href="https://inrix.sharepoint.com/Engineering/Shared%20Documents/Platform/XFCD%20Interface%20Spec.pdf" target="_blank">XFCD Interface Specification (Download from SharePoint)</a></p>
+
+<p><a href="http://devzonedocs.inrix.com/v3/docs/index.php/xfcd/" target="_blank">XFCD Interface Specification (DevZone Docs)</a></p>
+
+<p><a href="http://inrix1/bi-new/ " target="_blank">BI Provider Reporting (IE only)</a></p>
+
+<p><a href=" http://dsapp01/INRIXQualityDashboard/DataProviders.aspx" target="_blank">Current Live Providers (Quality Dashboard)</a></p>
+
+<p id="p1"></p>
+
+<button type="button"
+onclick="document.getElementById('p2').innerHTML = 'In progress'"> 
+Display additional provider attribute information</button>
+
+<p id="p2"></p>
+
+<!--<button type="button" id="file-input" onclick="readSingleFile('file:///C:/Users/nick/Downloads/rdd.providertype.txt')"> 
+Display additional provider information</button>-->
+
+<script language="javascript" type="text/javascript">
+
+
+function readSingleFile(e) {
+  var file = e.target.files[0];
+  if (!file) {
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var contents = e.target.result;
+    displayContents(contents);
+  };
+  reader.readAsText(file);
+}
+
+function displayContents(contents) {
+  var element = document.getElementById('file-content');
+  element.innerHTML = contents;
+}
+
+document.getElementById('file-input')
+  .addEventListener('change', readSingleFile, false);
+</script>
+
+<pre id="file-content"></pre>
+
+<p id="p3"></p>
+
+</div>
+
+<div id="footer">
+
+<p id="demo"></p>
+
+<script>
+document.getElementById("demo").innerHTML = Date();
+</script> 
+
+</div>
+</body>
+</html>
